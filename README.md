@@ -29,5 +29,3 @@ Build the new offline file as usual, then in PETMalou go to **User Accounts › 
 ## Bringing over edits from the offline file
 
 Offline file: **Settings / Data › Backup JSON**. PETMalou (Admin): **Settings / Data › Restore JSON**.
-# petmalou
-PETMalou - AHI Inventory Monitoring online (GitHub Pages + Firebase)
