@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PETMalou · AHI Inventory Monitoring</title>
+<style>:root{--bg:#f4f5f2;--surface:#fff;--surface-2:#f8f9f6;--line:#e3e5df;--line-2:#d3d6ce;--ink:#1b1e1a;--ink-2:#4e524b;--ink-3:#80847c;--brand:#3d6b0a;--brand-2:#62b300;--green:#1f8a4c;--red:#d64545;--orange:#d9731a;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);font-size:14px}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg)}button,input,select{font:inherit;color:inherit}a{color:#2a78d6}
+#gate .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);background:var(--surface);padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+#gate .btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+#gate .in{border:1px solid var(--line-2);border-radius:8px;padding:7px 10px;background:#fff}
+#gate .in:focus{outline:2px solid #b7d98f;border-color:var(--brand-2)}
+#gate{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:16px;background:#1f2a14 radial-gradient(circle at 20% 10%,#3d6b0a 0,transparent 55%);overflow:auto}
+.gcard{background:#fff;border-radius:14px;width:min(420px,100%);padding:26px 26px 20px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.glogo{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.glogo img{width:52px;height:52px;border-radius:10px;border:1px solid var(--line);padding:3px}
+.glogo b{display:block;font-size:20px;color:var(--brand)}
+.glogo span{font-size:12px;color:var(--ink-3)}
+.gcard h2{font-size:17px;margin:0 0 4px}
+.gsub{font-size:13px;color:var(--ink-2);margin:0 0 14px;line-height:1.45}
+.gf{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.gf em{font-style:normal;font-weight:400;color:var(--ink-3)}
+.gf .in{width:100%;padding:9px 10px;font-size:14px}
+.gbtn{width:100%;justify-content:center;padding:10px;margin-top:4px;font-size:14px}
+.gmsg{font-size:12.5px;min-height:18px;margin:10px 0 4px;color:var(--ink-2)}
+.gmsg.err{color:var(--red)}.gmsg.ok{color:var(--green)}
+.glinks{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;margin-top:6px}
+#side .foot #petUser{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08);line-height:1.5}
+#petNew .btn{margin-right:4px}
+</style>
+<style id="appCss"></style>
+</head>
+<body>
+<div id="app"></div>
+<div id="gate" style="display:flex"><div class="gcard"><p class="gmsg">Loading PETMalou…</p></div></div>
+<div id="modalBg"></div><div id="tip"></div><div id="toast" class="toast"></div><div id="printArea"></div>
+<script type="application/json" id="seed"></script>
+<script type="application/json" id="petSeed"></script>
+<script type="text/plain" id="logoSrc"></script>
+<script type="application/json" id="petPatches">[{"t":"region","start":"function loadState(){","end":"function normalizeState(st){","new":"function loadState(){\n  try {\n    const raw = window.PETM && PETM.initialState;\n    if (raw) { const st = JSON.parse(raw); if (st && st.app === APP_ID) { S = normalizeState(st); return; } }\n  } catch (e) { console.warn('cloud state unreadable', e); }\n  S = blankState();\n}\n"},{"t":"region","start":"function saveState(silent){","end":"/* ---------- field definitions ---------- */","new":"function saveState(silent){\n  if (!PETM.canEdit) { PETM_revert(); return; }\n  S.savedAt = Date.now();\n  PETM_push();\n  updateSaveState();\n  if (!silent) toast('Changes saved');\n}\nfunction updateSaveState(){\n  const el = $('#saveState'); if (!el) return;\n  el.innerHTML = PETM_syncLabel();\n}\n\n"},{"t":"rep","old":"  window.addEventListener('beforeunload', () => { try { localStorage.setItem(LS_KEY, JSON.stringify(S, stateReplacer)); } catch (e) {} });","new":"  window.addEventListener('beforeunload', e => { if (PETM_unsynced()) { e.preventDefault(); e.returnValue = ''; } });","n":1},{"t":"rep","old":"  if (!storageOK) toast('Browser storage is blocked here — changes will not persist. Use Backup JSON.', true);\n","new":"","n":1},{"t":"rep","old":"const ent = {ts: Date.now(), kind,","new":"const ent = {ts: Date.now(), by: PETM.user ? PETM.user.name : '', kind,","n":1},{"t":"rep","old":"fmtTS(x.ts)}<\/td>","new":"fmtTS(x.ts)}${x.by ? '<div class=\"small muted\">' + esc(x.by) + '<\/div>' : ''}<\/td>","n":1},{"t":"rep","old":"fmtTS(h.ts)}<\/td>","new":"fmtTS(h.ts)}${h.by ? '<div class=\"small muted\">' + esc(h.by) + '<\/div>' : ''}<\/td>","n":2},{"t":"rep","old":"unshift({ts: Date.now(), type: $('#noteType').value, text: t})","new":"unshift({ts: Date.now(), by: PETM.user ? PETM.user.name : '', type: $('#noteType').value, text: t})","n":1},{"t":"rep","old":"fmtTS(n.ts)} · <b>","new":"fmtTS(n.ts)}${n.by ? ' · ' + esc(n.by) : ''} · <b>","n":1},{"t":"rep","old":"<div><b>AHI INVENTORY<\/b><span>Monitoring System<\/span><\/div>","new":"<div><b>PETMALOU<\/b><span>AHI Inventory Monitoring<\/span><\/div>","n":1},{"t":"rep","old":"<div class=\"foot\">Source: ${esc(SEED.sourceFile)}<br>Data as of ${esc(SEED.asOf)} · Offline app<\/div>","new":"<div class=\"foot\"><div id=\"petUser\"><\/div>Source: ${esc(SEED.sourceFile)}<br>Data as of ${esc(SEED.asOf)} · Online<\/div>","n":1},{"t":"rep","old":"<h1>AHI INVENTORY MONITORING<\/h1>","new":"<h1>PETMalou · AHI INVENTORY MONITORING<\/h1>","n":1},{"t":"rep","old":"<div>AHI Inventory Monitoring · Data as of","new":"<div>PETMalou · AHI Inventory Monitoring · Data as of","n":1},{"t":"rep","old":"function storageSize(){ try { return (localStorage.getItem(LS_KEY) || '').length; } catch (e) { return 0; } }","new":"function storageSize(){ try { return JSON.stringify(S, stateReplacer).length; } catch (e) { return 0; } }","n":1},{"t":"rep","old":"<dt>Browser storage used<\/dt>","new":"<dt>Cloud data size<\/dt>","n":1},{"t":"rep","old":"Restore it on another computer or browser that has this same HTML file.","new":"Restoring a backup replaces the team's shared data for everyone. A backup from the offline HTML file can be restored here too.","n":1},{"t":"rep","old":"The workbook data is embedded in this HTML file and never changes. Your edits are saved separately in this browser (localStorage for this file). Clearing browser data removes them — keep a JSON backup.","new":"The workbook data is loaded by an Admin (User Accounts › Workbook data) and never changes. Your edits are saved to the team's cloud database and shared with everyone signed in. Keep a periodic JSON backup.","n":1},{"t":"rep","old":"This replaces all current changes, monitoring items and settings in this browser.","new":"This replaces all current changes, monitoring items and settings for the whole team.","n":1},{"t":"rep","old":"if (!confirm(`Reset ${what} to the original workbook data? All changes will be lost.`)) return false;","new":"if (!confirm(`Reset ${what} to the original workbook data for the WHOLE TEAM? All changes will be lost.`)) return false;","n":1}]</script>
+<script type="text/plain" id="petGlue">
+/* ============================================================
+   PETMalou — cloud sync (Firebase Realtime Database) + accounts
+   S is saved to petmalou/state as one JSON string. Saves run in a
+   transaction and are 3-way merged with whatever teammates saved.
+   ============================================================ */
+let PETM_BASE = null, PETM_pushing = false, PETM_again = false, PETM_pending = null, PETM_lastStr = null, PETM_conn = true, PETM_err = '', PETM_USERS = {};
+const PETM_str = o => JSON.stringify(o, stateReplacer);
+const PETM_clone = o => JSON.parse(PETM_str(o));
+const PETM_isObj = v => v !== null && typeof v === 'object' && !Array.isArray(v);
+function PETM_key(el){ return el !== null && typeof el === 'object' && el.id != null ? 'id:' + el.id : 'j:' + JSON.stringify(el); }
+function PETM_merge3(b, l, r){
+  const sb = JSON.stringify(b), sl = JSON.stringify(l), sr = JSON.stringify(r);
+  if (sl === sb) return r; if (sr === sb || sr === sl) return l;
+  if (PETM_isObj(l) && PETM_isObj(r)) {
+    const bo = PETM_isObj(b) ? b : {}, out = {};
+    new Set(Object.keys(l).concat(Object.keys(r))).forEach(k => {
+      const inL = k in l, inR = k in r, inB = k in bo;
+      if (!inL && inB) { if (JSON.stringify(r[k]) !== JSON.stringify(bo[k])) out[k] = r[k]; return; }
+      if (!inR && inB) { if (JSON.stringify(l[k]) !== JSON.stringify(bo[k])) out[k] = l[k]; return; }
+      if (!inL) { out[k] = r[k]; return; }
+      if (!inR) { out[k] = l[k]; return; }
+      out[k] = PETM_merge3(inB ? bo[k] : undefined, l[k], r[k]);
+    });
+    return out;
+  }
+  if (Array.isArray(l) && Array.isArray(r)) {
+    const bA = Array.isArray(b) ? b : [];
+    const bM = new Map(bA.map(e => [PETM_key(e), e])), lM = new Map(l.map(e => [PETM_key(e), e])), rM = new Map(r.map(e => [PETM_key(e), e]));
+    const out = [];
+    r.forEach(e => {
+      const k = PETM_key(e);
+      if (bM.has(k) && !lM.has(k)) return;                       // removed here
+      if (lM.has(k)) out.push(PETM_isObj(e) ? PETM_merge3(bM.get(k), lM.get(k), e) : lM.get(k));
+      else out.push(e);
+    });
+    l.forEach(e => { const k = PETM_key(e); if (!rM.has(k) && !bM.has(k)) out.push(e); });   // added here
+    return out;
+  }
+  return l;   // same value changed on both sides: the newer local edit wins
+}
+function PETM_safe(){
+  if ($('#modalBg') && $('#modalBg').classList.contains('on')) return false;
+  if (document.querySelector('td input.cell, td select.cell, td textarea.cell')) return false;
+  const a = document.activeElement;
+  if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.closest('#view')) return false;
+  return true;
+}
+function PETM_unsynced(){ return !!PETM_BASE && PETM_str(S) !== PETM_str(PETM_BASE); }
+function PETM_integrate(str){
+  if (str == null) return;
+  if (PETM_pushing || !PETM_safe()) { PETM_pending = str; return; }
+  PETM_pending = null;
+  if (str === PETM_lastStr) return;
+  let R; try { R = JSON.parse(str); } catch (e) { return; }
+  if (!R || R.app !== APP_ID) return;
+  const local = PETM_str(S);
+  let next, needPush = false;
+  if (local === PETM_str(PETM_BASE)) next = R;
+  else { next = PETM_merge3(PETM_clone(PETM_BASE), PETM_clone(S), R); needPush = JSON.stringify(next) !== str; }
+  PETM_BASE = R; PETM_lastStr = str;
+  if (JSON.stringify(next) !== local) { S = normalizeState(next); DIRTY = true; render(); }
+  updateSaveState();
+  if (needPush) PETM_push();
+}
+function PETM_doPush(){
+  if (!PETM.canEdit) return;
+  if (PETM_pushing) { PETM_again = true; return; }
+  const L = PETM_clone(S), B = PETM_BASE ? PETM_clone(PETM_BASE) : null, Ls = JSON.stringify(L);
+  if (B && Ls === JSON.stringify(B)) { updateSaveState(); return; }
+  PETM_pushing = true; PETM_err = ''; updateSaveState();
+  PETM.ref('state').transaction(cur => {
+    if (cur == null || !B) return Ls;
+    let R; try { R = JSON.parse(cur); } catch (e) { return Ls; }
+    return JSON.stringify(PETM_merge3(B, L, R));
+  }, (err, committed, snap) => {
+    PETM_pushing = false;
+    if (err) { PETM_err = err.message || String(err); updateSaveState(); toast('Cloud save failed: ' + PETM_err + ' — retrying', true); setTimeout(PETM_doPush, 5000); return; }
+    if (committed) { PETM_BASE = L; PETM_lastStr = Ls; PETM_integrate(snap.val()); }
+    else PETM_again = true;
+    if (PETM_again || PETM_unsynced()) { PETM_again = false; PETM_push(); }
+    updateSaveState();
+  }, false);
+}
+const PETM_push = debounce(PETM_doPush, 500);
+function PETM_revert(){
+  S = normalizeState(PETM_clone(PETM_BASE || blankState())); DIRTY = true; render();
+  toast('View-only account — your change was not saved', true);
+}
+function PETM_syncLabel(){
+  if (!PETM_conn) return '<span style="color:var(--red)">● Offline — reconnecting' + (PETM_unsynced() ? '; changes will sync' : '') + '</span>';
+  if (PETM_err) return '<span style="color:var(--red)">● Cloud save failed — retrying</span>';
+  if (PETM_pushing || PETM_unsynced()) return '<span style="color:var(--orange)">● Saving to cloud…</span>';
+  return '<span style="color:var(--green)">● Cloud synced</span>' + (S && S.savedAt ? '<br>Last change ' + fmtTS(S.savedAt) : '');
+}
+
+/* accounts view (Admin) */
+const PETM_ROLES = ['Admin', 'Editor', 'Viewer'], PETM_STATUSES = ['pending', 'approved', 'disabled'];
+function viewUsers(){
+  const m = PETM.meta || {};
+  $('#view').innerHTML = `<div class="pagehd"><div><h2>User Accounts</h2><div class="sub">People request access from the sign-in screen. Approve them here and set a role. <b>Admin</b>: everything, including Settings and this page. <b>Editor</b>: view and edit every module except Settings. <b>Viewer</b>: view only.</div></div></div>
+  <div class="card mb"><div class="hd"><h3>Accounts</h3><span class="note" id="uCount"></span></div><div class="bd flush tblwrap" id="uTbl"></div></div>
+  <div class="card"><div class="hd"><h3>Workbook data</h3><span class="note">Shared with everyone signed in</span></div><div class="bd">
+    <dl class="kv"><dt>Source file</dt><dd>${esc(m.sourceFile || '—')}</dd><dt>Data as of</dt><dd>${esc(m.asOf || '—')}</dd><dt>Records</dt><dd class="num">${fmtNum(m.records)}</dd><dt>Loaded from</dt><dd>${esc(m.fileName || '—')}</dd><dt>Loaded by</dt><dd>${esc(m.loadedBy || '—')} · ${fmtTS(m.loadedAt)}</dd></dl>
+    <p class="small muted">When there is a new monthly workbook build of the offline app, load it here. Edits, monitoring items and settings stay as they are; everyone is asked to reload.</p>
+    <label class="btn pri">Replace workbook data…<input type="file" id="uSeedFile" accept=".html,.htm" hidden></label> <span class="small muted" id="uSeedMsg"></span></div></div>`;
+  $('#uSeedFile').onchange = async e => {
+    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    if (!confirm('Replace the workbook data for everyone with “' + f.name + '”?')) return;
+    $('#uSeedMsg').textContent = 'Uploading…';
+    try { await PETM.uploadWorkbook(f); $('#uSeedMsg').textContent = 'Done.'; toast('Workbook data replaced — reloading'); setTimeout(() => location.reload(), 1200); }
+    catch (err) { $('#uSeedMsg').textContent = ''; toast(err.message, true); }
+  };
+  PETM_drawUsers();
+}
+function PETM_drawUsers(){
+  const el = $('#uTbl'); if (!el) return;
+  const list = Object.entries(PETM_USERS).map(([uid, u]) => Object.assign({uid}, u)).sort((a, b) => (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1) || (b.createdAt || 0) - (a.createdAt || 0));
+  const pend = list.filter(u => u.status === 'pending').length;
+  $('#uCount').textContent = list.length + ' accounts' + (pend ? ' · ' + pend + ' waiting for approval' : '');
+  el.innerHTML = `<table class="t"><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Requested</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>${list.map(u => `<tr data-uid="${esc(u.uid)}"${u.status === 'pending' ? ' style="background:#fff8e6"' : ''}>
+    <td><b>${esc(u.name)}</b>${u.uid === PETM.user.uid ? ' <span class="pill">you</span>' : ''}</td><td>${esc(u.email)}</td><td>${esc(u.dept || '—')}</td><td>${fmtTS(u.createdAt)}</td>
+    <td><select class="in" data-urole>${PETM_ROLES.map(r => `<option ${u.role === r ? 'selected' : ''}>${r}</option>`).join('')}</select></td>
+    <td><select class="in" data-ustat>${PETM_STATUSES.map(s => `<option value="${s}" ${u.status === s ? 'selected' : ''}>${s[0].toUpperCase() + s.slice(1)}</option>`).join('')}</select></td>
+    <td>${u.status === 'pending' ? '<button class="btn sm pri" data-uok>Approve</button> ' : ''}<button class="btn sm" data-ureset title="Email this person a link to set a new password">Reset password</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty">No accounts</td></tr>'}</tbody></table>`;
+  const upd = async (uid, patch) => {
+    if (uid === PETM.user.uid && ((patch.role && patch.role !== 'Admin') || (patch.status && patch.status !== 'approved')) && !confirm('This removes your own Admin access. Continue?')) { PETM_drawUsers(); return; }
+    try { await PETM.ref('users/' + uid).update(Object.assign(patch, {updatedBy: PETM.user.name, updatedAt: Date.now()})); toast('Account updated'); } catch (e) { toast('Update failed: ' + e.message, true); PETM_drawUsers(); }
+  };
+  $$('tr[data-uid]', el).forEach(tr => {
+    const uid = tr.dataset.uid, u = PETM_USERS[uid];
+    $('[data-urole]', tr).onchange = e => upd(uid, {role: e.target.value});
+    $('[data-ustat]', tr).onchange = e => upd(uid, {status: e.target.value});
+    const ok = $('[data-uok]', tr); if (ok) ok.onclick = () => upd(uid, {status: 'approved', role: $('[data-urole]', tr).value});
+    $('[data-ureset]', tr).onclick = async () => { try { await PETM.auth.sendPasswordResetEmail(u.email); toast('Password reset email sent to ' + u.email); } catch (e) { toast(e.message, true); } };
+  });
+}
+function PETM_navBadge(){
+  const b = $('#navUsers'); if (!b) return;
+  const n = Object.values(PETM_USERS).filter(u => u.status === 'pending').length;
+  b.style.display = n ? '' : 'none'; b.textContent = n;
+}
+
+/* hook the shell and boot */
+const PETM_renderShell0 = renderShell;
+renderShell = function(){
+  PETM_renderShell0();
+  const u = PETM.user;
+  $('#petUser').innerHTML = `<div style="color:#fff;font-weight:600;font-size:12.5px">${esc(u.name)}</div><div>${esc(PETM.role)}${u.dept ? ' · ' + esc(u.dept) : ''}</div><a href="#" id="petOut" style="color:#b7d98f">Sign out</a>`;
+  $('#petOut').onclick = e => { e.preventDefault(); if (PETM_unsynced() && !confirm('Some changes are still saving. Sign out anyway?')) return; PETM.auth.signOut().then(() => location.replace(location.pathname)); };
+  const nu = $('#nav a[data-nav="users"]'); if (nu) nu.insertAdjacentHTML('beforeend', '<em class="cnt" id="navUsers" style="display:none;font-style:normal"></em>');
+  $('#saveState').insertAdjacentHTML('beforebegin', '<span id="petNew"></span>');
+  PETM_navBadge();
+};
+(function PETM_setup(){
+  ICONS.users = '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>';
+  if (PETM.isAdmin) { NAV.push(['users', 'User Accounts']); VIEWS.users = viewUsers; }
+  else { const i = NAV.findIndex(n => n[0] === 'settings'); if (i >= 0) NAV.splice(i, 1); delete VIEWS.settings; }
+  if (PETM.user.dept && DEPTS.some(d => d.k === PETM.user.dept)) { INV.dept = PETM.user.dept; DEP.k = PETM.user.dept; }
+  try { PETM_BASE = PETM.initialState ? JSON.parse(PETM.initialState) : null; } catch (e) { PETM_BASE = null; }
+  PETM_lastStr = PETM.initialState || null;
+  PETM.afterInit = () => {
+    if (!PETM_BASE) PETM_BASE = PETM_clone(S);
+    PETM.ref('state').on('value', snap => { const v = snap.val(); if (v == null) return; if (PETM_pushing) { PETM_pending = v; return; } PETM_integrate(v); });
+    PETM.db.ref('.info/connected').on('value', s => { PETM_conn = !!s.val(); updateSaveState(); });
+    PETM.ref('meta/seedVersion').on('value', s => { const v = s.val(); const el = $('#petNew'); if (el) el.innerHTML = v && v !== PETM.seedVersion ? '<button class="btn sm" onclick="location.reload()" style="border-color:var(--orange);color:var(--orange)">New workbook data — Reload</button>' : ''; });
+    if (PETM.isAdmin) PETM.ref('users').on('value', s => { PETM_USERS = s.val() || {}; PETM_navBadge(); if (ROUTE && ROUTE.v === 'users') PETM_drawUsers(); });
+    setInterval(() => { if (PETM_pending && !PETM_pushing && PETM_safe()) PETM_integrate(PETM_pending); }, 1500);
+    updateSaveState();
+  };
+})();
+</script>
+<script src="firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>(function(){
+'use strict';
+const CFG = window.PET_FIREBASE_CONFIG || {};
+const ROOT = 'petmalou';
+const gate = document.getElementById('gate');
+const q = s => gate.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let LOGO = '';
+const DEPTS = ['CONS — Construction','QMD — Quality Management','CCR — Customer Care','FIN — Finance','SAM — Title & Documentation','Sales','Management','Other'];
+const PETM = window.PETM = {ROOT, user: null, role: null, canEdit: false, isAdmin: false, booted: false};
+let pendingProfile = null;
+
+function shell(inner){
+  gate.innerHTML = `<div class="gcard"><div class="glogo">${LOGO ? `<img src="${LOGO}" alt="Asiana Homes logo">` : ''}<div><b>PETMalou</b><span>AHI Inventory Monitoring · Online</span></div></div>${inner}</div>`;
+  gate.style.display = 'flex';
+}
+function say(t, err){ const m = q('.gmsg'); if (m) { m.textContent = t; m.className = 'gmsg' + (err ? ' err' : ' ok'); } }
+function authErr(e){
+  const c = (e && e.code) || '';
+  return ({'auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong email or password.','auth/user-not-found':'Wrong email or password.','auth/invalid-email':'That email address is not valid.','auth/email-already-in-use':'An account with this email already exists. Sign in instead.','auth/weak-password':'Use a stronger password (8+ characters).','auth/too-many-requests':'Too many attempts. Wait a few minutes and try again.','auth/network-request-failed':'No internet connection.','auth/operation-not-allowed':'Email/password sign-in is not enabled in Firebase.'})[c] || (e && e.message) || String(e);
+}
+
+if (!window.firebase || !CFG.apiKey || /PASTE/.test(CFG.apiKey)) {
+  shell('<p class="gmsg err">Firebase is not set up yet. Put the project settings in <code>firebase-config.js</code>.</p>');
+  return;
+}
+firebase.initializeApp(CFG);
+const auth = firebase.auth(), db = firebase.database();
+PETM.auth = auth; PETM.db = db; PETM.ref = p => db.ref(ROOT + '/' + p);
+
+function signInView(note){
+  shell(`<h2>Sign in</h2>
+    <form id="gIn"><label class="gf"><span>Email</span><input class="in" type="email" id="gEmail" autocomplete="username" required></label>
+    <label class="gf"><span>Password</span><input class="in" type="password" id="gPass" autocomplete="current-password" required></label>
+    <button class="btn pri gbtn" type="submit">Sign in</button></form>
+    <p class="gmsg${note ? ' ok' : ''}">${esc(note || '')}</p>
+    <div class="glinks"><a href="#" id="gToUp">Create an account</a><a href="#" id="gToReset">Forgot password?</a></div>`);
+  q('#gIn').onsubmit = async e => { e.preventDefault(); say('Signing in…'); try { await auth.signInWithEmailAndPassword(q('#gEmail').value.trim(), q('#gPass').value); } catch (err) { say(authErr(err), true); } };
+  q('#gToUp').onclick = e => { e.preventDefault(); signUpView(); };
+  q('#gToReset').onclick = e => { e.preventDefault(); resetView(q('#gEmail').value.trim()); };
+}
+function signUpView(){
+  shell(`<h2>Create an account</h2><p class="gsub">An Admin approves new accounts before they can open the app.</p>
+    <form id="gUp"><label class="gf"><span>Full name</span><input class="in" id="gName" autocomplete="name" required></label>
+    <label class="gf"><span>Email</span><input class="in" type="email" id="gEmail" autocomplete="username" required></label>
+    <label class="gf"><span>Department</span><select class="in" id="gDept"><option value="">Choose…</option>${DEPTS.map(d => `<option value="${esc(d.split(' — ')[0])}">${esc(d)}</option>`).join('')}</select></label>
+    <label class="gf"><span>Password <em>(8+ characters)</em></span><input class="in" type="password" id="gPass" autocomplete="new-password" minlength="8" required></label>
+    <label class="gf"><span>Confirm password</span><input class="in" type="password" id="gPass2" autocomplete="new-password" minlength="8" required></label>
+    <button class="btn pri gbtn" type="submit">Request access</button></form>
+    <p class="gmsg"></p><div class="glinks"><a href="#" id="gToIn">Back to sign in</a></div>`);
+  q('#gUp').onsubmit = async e => {
+    e.preventDefault();
+    const name = q('#gName').value.trim(), email = q('#gEmail').value.trim(), p = q('#gPass').value;
+    if (!q('#gDept').value) return say('Choose your department.', true);
+    if (p.length < 8) return say('Use at least 8 characters for the password.', true);
+    if (p !== q('#gPass2').value) return say('The two passwords do not match.', true);
+    pendingProfile = {name, dept: q('#gDept').value};
+    say('Creating your account…');
+    try { const cred = await auth.createUserWithEmailAndPassword(email, p); cred.user.updateProfile({displayName: name}).catch(() => {}); }
+    catch (err) { pendingProfile = null; say(authErr(err), true); }
+  };
+  q('#gToIn').onclick = e => { e.preventDefault(); signInView(); };
+}
+function resetView(email){
+  shell(`<h2>Reset password</h2><p class="gsub">We'll email you a link to set a new password.</p>
+    <form id="gRs"><label class="gf"><span>Email</span><input class="in" type="email" id="gEmail" value="${esc(email || '')}" required></label>
+    <button class="btn pri gbtn" type="submit">Send reset link</button></form><p class="gmsg"></p><div class="glinks"><a href="#" id="gToIn">Back to sign in</a></div>`);
+  q('#gRs').onsubmit = async e => { e.preventDefault(); try { await auth.sendPasswordResetEmail(q('#gEmail').value.trim()); say('If that email has an account, a reset link is on its way. Check your inbox and spam folder.'); } catch (err) { say(authErr(err), true); } };
+  q('#gToIn').onclick = e => { e.preventDefault(); signInView(); };
+}
+function outBtn(){ return '<div class="glinks"><a href="#" id="gOut">Sign out</a></div>'; }
+function wireOut(){ const o = q('#gOut'); if (o) o.onclick = e => { e.preventDefault(); auth.signOut(); }; }
+function waitView(rec){
+  shell(`<h2>Waiting for approval</h2><p class="gsub">Hi ${esc(rec.name)} — your account request was sent. An Admin needs to approve it before you can open PETMalou.</p>
+    <button class="btn pri gbtn" id="gAgain">Check again</button><p class="gmsg"></p>${outBtn()}`);
+  q('#gAgain').onclick = () => location.reload(); wireOut();
+}
+
+/* load the workbook data (seed) from an offline app HTML file */
+PETM.uploadWorkbook = async function(file){
+  const text = await file.text();
+  const doc = new DOMParser().parseFromString(text, 'text/html');
+  const s = doc.getElementById('seed'), p = doc.getElementById('petSeed'), l = doc.getElementById('logoSrc');
+  const seedStr = s ? s.textContent : null; let petStr = p ? p.textContent : null;
+  let seed; try { seed = JSON.parse(seedStr); } catch (e) { seed = null; }
+  if (!seed || !Array.isArray(seed.records) || !seed.records.length) throw new Error('No inventory data found in “' + file.name + '”. Choose the offline AHI Inventory Monitoring HTML file.');
+  if (petStr) { try { JSON.parse(petStr); } catch (e) { petStr = null; } }
+  const code = (Array.from(doc.querySelectorAll('script')).find(x => !x.type && /function init\(\)/.test(x.textContent) && /\binit\(\);\s*$/.test(x.textContent)) || {}).textContent;
+  const css = (doc.querySelector('style') || {}).textContent;
+  if (!code || !css) throw new Error('“' + file.name + '” does not contain the app. Choose the offline AHI Inventory Monitoring HTML file.');
+  PETM.buildApp(code);   // throws if this version of the offline app can't be adapted
+  const v = Date.now();
+  await PETM.ref('app').set({code, css});
+  await PETM.ref('seed').set(seedStr);
+  await PETM.ref('petSeed').set(petStr || null);
+  if (l && l.textContent.trim()) await PETM.ref('public/logo').set(l.textContent.trim());
+  await PETM.ref('meta').set({seedVersion: v, sourceFile: seed.sourceFile || '', asOf: seed.asOf || '', records: seed.records.length, fileName: file.name, loadedBy: PETM.user.name, loadedAt: Date.now()});
+};
+PETM.buildApp = function(code){
+  const P = JSON.parse(document.getElementById('petPatches').textContent);
+  let out = code.replace(/\binit\(\);\s*$/, '');
+  for (const op of P) {
+    if (op.t === 'region') {
+      const a = out.indexOf(op.start), b = out.indexOf(op.end, a + 1);
+      if (a < 0 || b < 0) throw new Error('App version not supported (missing “' + op.start + '”).');
+      out = out.slice(0, a) + op.new + out.slice(b);
+    } else {
+      const n = out.split(op.old).length - 1;
+      if (n !== (op.n || 1)) throw new Error('App version not supported (patch “' + op.old.slice(0, 50) + '”).');
+      out = out.split(op.old).join(op.new);
+    }
+  }
+  return out + '\n' + document.getElementById('petGlue').textContent + '\ninit(); PETM.afterInit();\n';
+};
+function uploadView(){
+  shell(`<h2>Load the workbook data</h2><p class="gsub">You're the Admin. One last step: choose the offline app file (for example <b>AHI_Inventory_Monitoring_4.html</b>). PETMalou copies the app, its inventory and its Strategic Plan data into the team database. Nobody else can open the app until this is done.</p>
+    <label class="btn pri gbtn">Choose file…<input type="file" id="gFile" accept=".html,.htm" hidden></label><p class="gmsg"></p>${outBtn()}`);
+  wireOut();
+  q('#gFile').onchange = async e => {
+    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    say('Uploading ' + f.name + '…');
+    try { await PETM.uploadWorkbook(f); say('Loaded. Opening the app…'); setTimeout(() => location.reload(), 800); } catch (err) { say(err.message, true); }
+  };
+}
+
+async function loadSeed(meta){
+  const KEY = 'PETMALOU_SEED_CACHE';
+  try { const c = JSON.parse(localStorage.getItem(KEY) || 'null'); if (c && c.v === meta.seedVersion && c.seed && c.app) return c; } catch (e) {}
+  const [s, p, a] = await Promise.all([PETM.ref('seed').get(), PETM.ref('petSeed').get(), PETM.ref('app').get()]);
+  const c = {v: meta.seedVersion, seed: s.val(), pet: p.val(), app: a.val()};
+  try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) { try { localStorage.removeItem(KEY); } catch (e2) {} }
+  return c;
+}
+function boot(c, stateStr){
+  if (!c.app || !c.app.code) throw new Error('The app has not been loaded yet. An Admin needs to load the offline app file again.');
+  const code = PETM.buildApp(c.app.code);
+  document.getElementById('appCss').textContent = c.app.css;
+  document.getElementById('seed').textContent = c.seed;
+  document.getElementById('petSeed').textContent = c.pet || '{"years":[],"projects":[],"tables":{}}';
+  document.getElementById('logoSrc').textContent = LOGO;
+  PETM.initialState = stateStr;
+  PETM.booted = true;
+  gate.style.display = 'none'; gate.innerHTML = '';
+  const s = document.createElement('script');
+  s.textContent = code;
+  document.body.appendChild(s);
+}
+async function afterSignIn(u){
+  shell('<p class="gmsg">Opening PETMalou…</p>');
+  const myRef = PETM.ref('users/' + u.uid);
+  let rec = (await myRef.get()).val();
+  if (!rec) {
+    const base = {name: (pendingProfile && pendingProfile.name) || u.displayName || u.email, email: u.email, dept: (pendingProfile && pendingProfile.dept) || '', createdAt: Date.now()};
+    try { await myRef.set(Object.assign({}, base, {role: 'Admin', status: 'approved', firstAdmin: true})); }   // only allowed while there are no accounts yet
+    catch (e) { await myRef.set(Object.assign({}, base, {role: 'Viewer', status: 'pending'})); }
+    rec = (await myRef.get()).val();
+  }
+  if (rec.status === 'pending') return waitView(rec);
+  if (rec.status !== 'approved') { shell(`<h2>Account disabled</h2><p class="gsub">This account can't open PETMalou. Ask an Admin to re-enable it.</p>${outBtn()}`); return wireOut(); }
+  PETM.user = {uid: u.uid, email: u.email, name: rec.name || u.email, dept: rec.dept || ''};
+  PETM.role = rec.role; PETM.isAdmin = rec.role === 'Admin'; PETM.canEdit = rec.role === 'Admin' || rec.role === 'Editor';
+  const meta = (await PETM.ref('meta').get()).val();
+  if (!meta || !meta.seedVersion) {
+    if (PETM.isAdmin) return uploadView();
+    shell(`<h2>Almost ready</h2><p class="gsub">Your account is approved, but an Admin still has to load the workbook data. Try again later.</p><button class="btn pri gbtn" onclick="location.reload()">Check again</button>${outBtn()}`); return wireOut();
+  }
+  PETM.meta = meta; PETM.seedVersion = meta.seedVersion;
+  const [c, st] = await Promise.all([loadSeed(meta), PETM.ref('state').get()]);
+  myRef.on('value', s => { const r = s.val(); if (!r || r.status !== 'approved' || r.role !== PETM.role) location.reload(); });
+  boot(c, st.val());
+}
+function setIcon(){ if (!LOGO) return; let l = document.querySelector('link[rel=icon]'); if (!l) { l = document.createElement('link'); l.rel = 'icon'; document.head.appendChild(l); } l.href = LOGO; }
+PETM.ref('public/logo').get().then(s => { LOGO = s.val() || ''; setIcon(); }).catch(() => {}).finally(() => auth.onAuthStateChanged(u => {
+  if (PETM.booted) { if (!u) location.replace(location.pathname); return; }
+  if (!u) return signInView();
+  afterSignIn(u).catch(e => { shell(`<p class="gmsg err">${esc(e.message || e)}</p>${outBtn()}`); wireOut(); });
+}));
+})();
+</script>
+</body></html>
