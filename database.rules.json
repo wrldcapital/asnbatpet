@@ -45,6 +45,13 @@
     "$k": {
      ".validate": "newData.isString() && newData.val().length < 10000000"
     }
+   },
+   "recFiles": {
+    ".read": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved'",
+    ".write": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved' && (root.child('petmalou/users/' + auth.uid).child('role').val() === 'Admin' || root.child('petmalou/users/' + auth.uid).child('role').val() === 'Editor')",
+    "$k": {
+     ".validate": "newData.isString() && newData.val().length < 10000000"
+    }
    }
   }
  }
