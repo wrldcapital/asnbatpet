@@ -34,7 +34,7 @@
 <script type="application/json" id="seed"></script>
 <script type="application/json" id="petSeed"></script>
 <script type="text/plain" id="logoSrc"></script>
-<script type="application/json" id="petPatches">[{"t":"region","start":"function loadState(){","end":"function normalizeState(st){","new":"function loadState(){\n  try {\n    const raw = window.PETM && PETM.initialState;\n    if (raw) { const st = JSON.parse(raw); if (st && st.app === APP_ID) { S = normalizeState(st); return; } }\n  } catch (e) { console.warn('cloud state unreadable', e); }\n  S = blankState();\n}\n"},{"t":"region","start":"function saveState(silent){","end":"/* ---------- field definitions ---------- */","new":"function saveState(silent){\n  if (!PETM.canEdit) { PETM_revert(); return; }\n  if (PETM_deptCheck()) { PETM_deptRevert(); return; }\n  S.savedAt = Date.now();\n  PETM_push();\n  updateSaveState();\n  if (!silent) toast('Changes saved');\n}\nfunction updateSaveState(){\n  const el = $('#saveState'); if (!el) return;\n  el.innerHTML = PETM_syncLabel();\n}\n\n"},{"t":"rep","old":"  window.addEventListener('beforeunload', () => { try { localStorage.setItem(LS_KEY, JSON.stringify(S, stateReplacer)); } catch (e) {} });","new":"  window.addEventListener('beforeunload', e => { if (PETM_unsynced()) { e.preventDefault(); e.returnValue = ''; } });","n":1},{"t":"rep","old":"  if (!storageOK) toast('Browser storage is blocked here — changes will not persist. Use Backup JSON.', true);\n","new":"","n":1,"opt":true},{"t":"rep","old":"const ent = {ts: Date.now(), kind,","new":"const ent = {ts: Date.now(), by: PETM.user ? PETM.user.name : '', kind,","n":1},{"t":"rep","old":"fmtTS(x.ts)}<\/td>","new":"fmtTS(x.ts)}${x.by ? '<div class=\"small muted\">' + esc(x.by) + '<\/div>' : ''}<\/td>","n":1,"opt":true},{"t":"rep","old":"fmtTS(h.ts)}<\/td>","new":"fmtTS(h.ts)}${h.by ? '<div class=\"small muted\">' + esc(h.by) + '<\/div>' : ''}<\/td>","n":2,"opt":true},{"t":"rep","old":"unshift({ts: Date.now(), type: $('#noteType').value, text: t})","new":"unshift({ts: Date.now(), by: PETM.user ? PETM.user.name : '', type: $('#noteType').value, text: t})","n":1,"opt":true},{"t":"rep","old":"fmtTS(n.ts)} · <b>","new":"fmtTS(n.ts)}${n.by ? ' · ' + esc(n.by) : ''} · <b>","n":1,"opt":true},{"t":"rep","old":"<div><b>AHI INVENTORY<\/b><span>Monitoring System<\/span><\/div>","new":"<div><b>ASNBATPET<\/b><span>AHI Inventory Monitoring<\/span><\/div>","n":1},{"t":"rep","old":"<div class=\"foot\">Source: ${esc(SEED.sourceFile)}","new":"<div class=\"foot\"><div id=\"petUser\"><\/div>Source: ${esc(SEED.sourceFile)}","n":1},{"t":"rep","old":"· Offline app<\/div>","new":"· Online<\/div>","n":1,"opt":true},{"t":"rep","old":"<span id=\"modeLbl\">Offline app<\/span>","new":"<span id=\"modeLbl\">Online<\/span>","n":1,"opt":true},{"t":"rep","old":"let ROUTE = {v: 'dashboard', p: null};","new":"let ROUTE = {v: 'projects', p: null};","n":1,"opt":true},{"t":"rep","old":"location.hash.slice(1) || 'dashboard'","new":"location.hash.slice(1) || 'projects'","n":1},{"t":"rep","old":"if (!VIEWS[ROUTE.v]) ROUTE = {v: 'dashboard', p: null};","new":"if (!VIEWS[ROUTE.v]) ROUTE = {v: 'projects', p: null};","n":1},{"t":"rep","old":"<h1>AHI INVENTORY MONITORING<\/h1>","new":"<h1>ASNBATPET · AHI INVENTORY MONITORING<\/h1>","n":1},{"t":"rep","old":"<div>AHI Inventory Monitoring · Data as of","new":"<div>ASNBATPET · AHI Inventory Monitoring · Data as of","n":1},{"t":"rep","old":"function storageSize(){ try { return (localStorage.getItem(LS_KEY) || '').length; } catch (e) { return 0; } }","new":"function storageSize(){ try { return JSON.stringify(S, stateReplacer).length; } catch (e) { return 0; } }","n":1},{"t":"rep","old":"<dt>Browser storage used<\/dt>","new":"<dt>Cloud data size<\/dt>","n":1},{"t":"rep","old":"Restore it on another computer or browser that has this same HTML file.","new":"Restoring a backup replaces the team's shared data for everyone. A backup from the offline HTML file can be restored here too.","n":1},{"t":"rep","old":"The workbook data is embedded in this HTML file and never changes. Your edits are saved separately in this browser (localStorage for this file). Clearing browser data removes them — keep a JSON backup.","new":"The workbook data is loaded by an Admin (User Accounts › Workbook data) and never changes. Your edits are saved to the team's cloud database and shared with everyone signed in. Keep a periodic JSON backup.","n":1},{"t":"rep","old":"This replaces all current changes, monitoring items and settings in this browser.","new":"This replaces all current changes, monitoring items and settings for the whole team.","n":1},{"t":"rep","old":"if (!confirm(`Reset ${what} to the original workbook data? All changes will be lost.`)) return false;","new":"if (!confirm(`Reset ${what} to the original workbook data for the WHOLE TEAM? All changes will be lost.`)) return false;","n":1}]</script>
+<script type="application/json" id="petPatches">[{"t":"region","start":"function loadState(){","end":"function normalizeState(st){","new":"function loadState(){\n  try {\n    const raw = window.PETM && PETM.initialState;\n    if (raw) { const st = JSON.parse(raw); if (st && st.app === APP_ID) { S = normalizeState(st); return; } }\n  } catch (e) { console.warn('cloud state unreadable', e); }\n  S = blankState();\n}\n"},{"t":"region","start":"function saveState(silent){","end":"/* ---------- field definitions ---------- */","new":"function saveState(silent){\n  if (!PETM.canEdit) { PETM_revert(); return; }\n  if (PETM_deptCheck()) { PETM_deptRevert(); return; }\n  S.savedAt = Date.now();\n  PETM_push();\n  updateSaveState();\n  if (!silent) toast('Changes saved');\n}\nfunction updateSaveState(){\n  const el = $('#saveState'); if (!el) return;\n  el.innerHTML = PETM_syncLabel();\n}\n\n"},{"t":"rep","old":"  window.addEventListener('beforeunload', () => { try { localStorage.setItem(LS_KEY, JSON.stringify(S, stateReplacer)); } catch (e) {} });","new":"  window.addEventListener('beforeunload', e => { if (PETM_unsynced()) { e.preventDefault(); e.returnValue = ''; } });","n":1},{"t":"rep","old":"  if (!storageOK) toast('Browser storage is blocked here — changes will not persist. Use Backup JSON.', true);\n","new":"","n":1,"opt":true},{"t":"rep","old":"const ent = {ts: Date.now(), kind,","new":"const ent = {ts: Date.now(), by: PETM.user ? PETM.user.name : '', kind,","n":1},{"t":"rep","old":"fmtTS(x.ts)}<\/td>","new":"fmtTS(x.ts)}${x.by ? '<div class=\"small muted\">' + esc(x.by) + '<\/div>' : ''}<\/td>","n":1,"opt":true},{"t":"rep","old":"fmtTS(h.ts)}<\/td>","new":"fmtTS(h.ts)}${h.by ? '<div class=\"small muted\">' + esc(h.by) + '<\/div>' : ''}<\/td>","n":2,"opt":true},{"t":"rep","old":"unshift({ts: Date.now(), type: $('#noteType').value, text: t})","new":"unshift({ts: Date.now(), by: PETM.user ? PETM.user.name : '', type: $('#noteType').value, text: t})","n":1,"opt":true},{"t":"rep","old":"fmtTS(n.ts)} · <b>","new":"fmtTS(n.ts)}${n.by ? ' · ' + esc(n.by) : ''} · <b>","n":1,"opt":true},{"t":"rep","old":"<div><b>AHI INVENTORY<\/b><span>Monitoring System<\/span><\/div>","new":"<div><b>ASNBATPET<\/b><span>AHI Inventory Monitoring<\/span><\/div>","n":1},{"t":"rep","old":"<div class=\"foot\">Source: ${esc(SEED.sourceFile)}","new":"<div class=\"foot\"><div id=\"petUser\"><\/div>Source: ${esc(SEED.sourceFile)}","n":1},{"t":"rep","old":"· Offline app<\/div>","new":"· Online<\/div>","n":1,"opt":true},{"t":"rep","old":"<span id=\"modeLbl\">Offline app<\/span>","new":"<span id=\"modeLbl\">Online<\/span>","n":1,"opt":true},{"t":"rep","old":"let ROUTE = {v: 'dashboard', p: null};","new":"let ROUTE = {v: 'projects', p: null};","n":1,"opt":true},{"t":"rep","old":"location.hash.slice(1) || 'dashboard'","new":"location.hash.slice(1) || 'projects'","n":1},{"t":"rep","old":"if (!VIEWS[ROUTE.v]) ROUTE = {v: 'dashboard', p: null};","new":"if (!VIEWS[ROUTE.v]) ROUTE = {v: 'projects', p: null};","n":1},{"t":"rep","old":"<h1>AHI INVENTORY MONITORING<\/h1>","new":"<h1>ASNBATPET · AHI INVENTORY MONITORING<\/h1>","n":1},{"t":"rep","old":"<div>AHI Inventory Monitoring · Data as of","new":"<div>ASNBATPET · AHI Inventory Monitoring · Data as of","n":1},{"t":"rep","old":"function storageSize(){ try { return (localStorage.getItem(LS_KEY) || '').length; } catch (e) { return 0; } }","new":"function storageSize(){ try { return JSON.stringify(S, stateReplacer).length; } catch (e) { return 0; } }","n":1},{"t":"rep","old":"<dt>Browser storage used<\/dt>","new":"<dt>Cloud data size<\/dt>","n":1},{"t":"rep","old":"Restore it on another computer or browser that has this same HTML file.","new":"Restoring a backup replaces the team's shared data for everyone. A backup from the offline HTML file can be restored here too.","n":1},{"t":"rep","old":"The workbook data is embedded in this HTML file and never changes. Your edits are saved separately in this browser (localStorage for this file). Clearing browser data removes them — keep a JSON backup.","new":"The workbook data is fixed in the online app and never changes. Your edits are saved to the team's cloud database and shared with everyone signed in. Keep a periodic JSON backup.","n":1},{"t":"rep","old":"This replaces all current changes, monitoring items and settings in this browser.","new":"This replaces all current changes, monitoring items and settings for the whole team.","n":1},{"t":"rep","old":"if (!confirm(`Reset ${what} to the original workbook data? All changes will be lost.`)) return false;","new":"if (!confirm(`Reset ${what} to the original workbook data for the WHOLE TEAM? All changes will be lost.`)) return false;","n":1}]</script>
 <script type="text/plain" id="petGlue">
 /* ============================================================
    ASNBATPET — cloud sync (Firebase Realtime Database) + accounts
@@ -239,17 +239,7 @@ function viewUsers(){
   const m = PETM.meta || {};
   $('#view').innerHTML = `<div class="pagehd"><div><h2>User Accounts</h2><div class="sub">People request access from the sign-in screen. Approve them here and set a role. <b>Admin</b>: everything, including Settings and this page. <b>Editor</b>: view and edit every module except Settings. <b>Viewer</b>: view only. An <b>Editor with a department</b> can only change that department's fields; set the department to “All departments” for full editing.</div></div></div>
   <div class="card mb"><div class="hd"><h3>Accounts</h3><span class="note" id="uCount"></span></div><div class="bd flush tblwrap" id="uTbl"></div></div>
-  <div class="card"><div class="hd"><h3>Workbook data</h3><span class="note">Shared with everyone signed in</span></div><div class="bd">
-    <dl class="kv"><dt>Source file</dt><dd>${esc(m.sourceFile || '—')}</dd><dt>Data as of</dt><dd>${esc(m.asOf || '—')}</dd><dt>Records</dt><dd class="num">${fmtNum(m.records)}</dd><dt>Loaded from</dt><dd>${esc(m.fileName || '—')}</dd><dt>Loaded by</dt><dd>${esc(m.loadedBy || '—')} · ${fmtTS(m.loadedAt)}</dd></dl>
-    <p class="small muted">When there is a new monthly workbook build of the offline app, load it here. Edits, monitoring items and settings stay as they are; everyone is asked to reload.</p>
-    <label class="btn pri">Replace workbook data…<input type="file" id="uSeedFile" accept=".html,.htm" hidden></label> <span class="small muted" id="uSeedMsg"></span></div></div>`;
-  $('#uSeedFile').onchange = async e => {
-    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-    if (!confirm('Replace the workbook data for everyone with “' + f.name + '”?')) return;
-    $('#uSeedMsg').textContent = 'Uploading…';
-    try { await PETM.uploadWorkbook(f); $('#uSeedMsg').textContent = 'Done.'; toast('Workbook data replaced — reloading'); setTimeout(() => location.reload(), 1200); }
-    catch (err) { $('#uSeedMsg').textContent = ''; toast(err.message, true); }
-  };
+`;
   PETM_drawUsers();
 }
 function PETM_drawUsers(){
@@ -395,26 +385,6 @@ function waitView(rec){
   q('#gAgain').onclick = () => location.reload(); wireOut();
 }
 
-/* load the workbook data (seed) from an offline app HTML file */
-PETM.uploadWorkbook = async function(file){
-  const text = await file.text();
-  const doc = new DOMParser().parseFromString(text, 'text/html');
-  const s = doc.getElementById('seed'), p = doc.getElementById('petSeed'), l = doc.getElementById('logoSrc');
-  const seedStr = s ? s.textContent : null; let petStr = p ? p.textContent : null;
-  let seed; try { seed = JSON.parse(seedStr); } catch (e) { seed = null; }
-  if (!seed || !Array.isArray(seed.records) || !seed.records.length) throw new Error('No inventory data found in “' + file.name + '”. Choose the offline AHI Inventory Monitoring HTML file.');
-  if (petStr) { try { JSON.parse(petStr); } catch (e) { petStr = null; } }
-  const code = (Array.from(doc.querySelectorAll('script')).find(x => !x.type && /function init\(\)/.test(x.textContent) && /\binit\(\);\s*$/.test(x.textContent)) || {}).textContent;
-  const css = (doc.querySelector('style') || {}).textContent;
-  if (!code || !css) throw new Error('“' + file.name + '” does not contain the app. Choose the offline AHI Inventory Monitoring HTML file.');
-  PETM.buildApp(code);   // throws if this version of the offline app can't be adapted
-  const v = Date.now();
-  await PETM.ref('app').set({code, css});
-  await PETM.ref('seed').set(seedStr);
-  await PETM.ref('petSeed').set(petStr || null);
-  if (l && l.textContent.trim()) await PETM.ref('public/logo').set(l.textContent.trim());
-  await PETM.ref('meta').set({seedVersion: v, sourceFile: seed.sourceFile || '', asOf: seed.asOf || '', records: seed.records.length, fileName: file.name, loadedBy: PETM.user.name, loadedAt: Date.now()});
-};
 PETM.buildApp = function(code){
   const P = JSON.parse(document.getElementById('petPatches').textContent);
   let out = code.replace(/\binit\(\);\s*$/, '');
@@ -431,17 +401,6 @@ PETM.buildApp = function(code){
   }
   return out + '\n' + document.getElementById('petGlue').textContent + '\ninit(); PETM.afterInit();\n';
 };
-function uploadView(){
-  shell(`<h2>Load the workbook data</h2><p class="gsub">You're the Admin. One last step: choose the offline app file (for example <b>AHI_Inventory_Monitoring_4.html</b>). ASNBATPET copies the app, its inventory and its Strategic Plan data into the team database. Nobody else can open the app until this is done.</p>
-    <label class="btn pri gbtn">Choose file…<input type="file" id="gFile" accept=".html,.htm" hidden></label><p class="gmsg"></p>${outBtn()}`);
-  wireOut();
-  q('#gFile').onchange = async e => {
-    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-    say('Uploading ' + f.name + '…');
-    try { await PETM.uploadWorkbook(f); say('Loaded. Opening the app…'); setTimeout(() => location.reload(), 800); } catch (err) { say(err.message, true); }
-  };
-}
-
 async function loadSeed(meta){
   const KEY = 'PETMALOU_SEED_CACHE';
   try { const c = JSON.parse(localStorage.getItem(KEY) || 'null'); if (c && c.v === meta.seedVersion && c.seed && c.app) return c; } catch (e) {}
@@ -480,14 +439,13 @@ async function afterSignIn(u){
   PETM.role = rec.role; PETM.isAdmin = rec.role === 'Admin'; PETM.canEdit = rec.role === 'Admin' || rec.role === 'Editor';
   const meta = (await PETM.ref('meta').get()).val();
   if (!meta || !meta.seedVersion) {
-    if (PETM.isAdmin) return uploadView();
-    shell(`<h2>Almost ready</h2><p class="gsub">Your account is approved, but an Admin still has to load the workbook data. Try again later.</p><button class="btn pri gbtn" onclick="location.reload()">Check again</button>${outBtn()}`); return wireOut();
+    shell(`<h2>Not available</h2><p class="gsub">The app data could not be found. Please contact the system administrator.</p><button class="btn pri gbtn" onclick="location.reload()">Check again</button>${outBtn()}`); return wireOut();
   }
   PETM.meta = meta; PETM.seedVersion = meta.seedVersion;
   const [c, st] = await Promise.all([loadSeed(meta), PETM.ref('state').get()]);
   myRef.on('value', s => { const r = s.val(); if (!r || r.status !== 'approved' || r.role !== PETM.role) location.reload(); });
   try { boot(c, st.val()); }
-  catch (e) { PETM.booted = false; if (PETM.isAdmin) { uploadView(); say('The stored app could not be opened (' + e.message + '). Load the latest offline file to continue.', true); return; } throw e; }
+  catch (e) { PETM.booted = false; throw e; }
 }
 function setIcon(){ if (!LOGO) return; let l = document.querySelector('link[rel=icon]'); if (!l) { l = document.createElement('link'); l.rel = 'icon'; document.head.appendChild(l); } l.href = LOGO; }
 PETM.ref('public/logo').get().then(s => { LOGO = s.val() || ''; setIcon(); }).catch(() => {}).finally(() => auth.onAuthStateChanged(u => {
