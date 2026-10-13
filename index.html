@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PETMalou · AHI Inventory Monitoring</title>
+<title>ASNBATPET · AHI Inventory Monitoring</title>
 <style>:root{--bg:#f4f5f2;--surface:#fff;--surface-2:#f8f9f6;--line:#e3e5df;--line-2:#d3d6ce;--ink:#1b1e1a;--ink-2:#4e524b;--ink-3:#80847c;--brand:#3d6b0a;--brand-2:#62b300;--green:#1f8a4c;--red:#d64545;--orange:#d9731a;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);font-size:14px}
 *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg)}button,input,select{font:inherit;color:inherit}a{color:#2a78d6}
 #gate .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);background:var(--surface);padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px}
@@ -29,15 +29,15 @@
 </head>
 <body>
 <div id="app"></div>
-<div id="gate" style="display:flex"><div class="gcard"><p class="gmsg">Loading PETMalou…</p></div></div>
+<div id="gate" style="display:flex"><div class="gcard"><p class="gmsg">Loading ASNBATPET…</p></div></div>
 <div id="modalBg"></div><div id="tip"></div><div id="toast" class="toast"></div><div id="printArea"></div>
 <script type="application/json" id="seed"></script>
 <script type="application/json" id="petSeed"></script>
 <script type="text/plain" id="logoSrc"></script>
-<script type="application/json" id="petPatches">[{"t":"region","start":"function loadState(){","end":"function normalizeState(st){","new":"function loadState(){\n  try {\n    const raw = window.PETM && PETM.initialState;\n    if (raw) { const st = JSON.parse(raw); if (st && st.app === APP_ID) { S = normalizeState(st); return; } }\n  } catch (e) { console.warn('cloud state unreadable', e); }\n  S = blankState();\n}\n"},{"t":"region","start":"function saveState(silent){","end":"/* ---------- field definitions ---------- */","new":"function saveState(silent){\n  if (!PETM.canEdit) { PETM_revert(); return; }\n  S.savedAt = Date.now();\n  PETM_push();\n  updateSaveState();\n  if (!silent) toast('Changes saved');\n}\nfunction updateSaveState(){\n  const el = $('#saveState'); if (!el) return;\n  el.innerHTML = PETM_syncLabel();\n}\n\n"},{"t":"rep","old":"  window.addEventListener('beforeunload', () => { try { localStorage.setItem(LS_KEY, JSON.stringify(S, stateReplacer)); } catch (e) {} });","new":"  window.addEventListener('beforeunload', e => { if (PETM_unsynced()) { e.preventDefault(); e.returnValue = ''; } });","n":1},{"t":"rep","old":"  if (!storageOK) toast('Browser storage is blocked here — changes will not persist. Use Backup JSON.', true);\n","new":"","n":1},{"t":"rep","old":"const ent = {ts: Date.now(), kind,","new":"const ent = {ts: Date.now(), by: PETM.user ? PETM.user.name : '', kind,","n":1},{"t":"rep","old":"fmtTS(x.ts)}<\/td>","new":"fmtTS(x.ts)}${x.by ? '<div class=\"small muted\">' + esc(x.by) + '<\/div>' : ''}<\/td>","n":1},{"t":"rep","old":"fmtTS(h.ts)}<\/td>","new":"fmtTS(h.ts)}${h.by ? '<div class=\"small muted\">' + esc(h.by) + '<\/div>' : ''}<\/td>","n":2},{"t":"rep","old":"unshift({ts: Date.now(), type: $('#noteType').value, text: t})","new":"unshift({ts: Date.now(), by: PETM.user ? PETM.user.name : '', type: $('#noteType').value, text: t})","n":1},{"t":"rep","old":"fmtTS(n.ts)} · <b>","new":"fmtTS(n.ts)}${n.by ? ' · ' + esc(n.by) : ''} · <b>","n":1},{"t":"rep","old":"<div><b>AHI INVENTORY<\/b><span>Monitoring System<\/span><\/div>","new":"<div><b>PETMALOU<\/b><span>AHI Inventory Monitoring<\/span><\/div>","n":1},{"t":"rep","old":"<div class=\"foot\">Source: ${esc(SEED.sourceFile)}<br>Data as of ${esc(SEED.asOf)} · Offline app<\/div>","new":"<div class=\"foot\"><div id=\"petUser\"><\/div>Source: ${esc(SEED.sourceFile)}<br>Data as of ${esc(SEED.asOf)} · Online<\/div>","n":1},{"t":"rep","old":"<h1>AHI INVENTORY MONITORING<\/h1>","new":"<h1>PETMalou · AHI INVENTORY MONITORING<\/h1>","n":1},{"t":"rep","old":"<div>AHI Inventory Monitoring · Data as of","new":"<div>PETMalou · AHI Inventory Monitoring · Data as of","n":1},{"t":"rep","old":"function storageSize(){ try { return (localStorage.getItem(LS_KEY) || '').length; } catch (e) { return 0; } }","new":"function storageSize(){ try { return JSON.stringify(S, stateReplacer).length; } catch (e) { return 0; } }","n":1},{"t":"rep","old":"<dt>Browser storage used<\/dt>","new":"<dt>Cloud data size<\/dt>","n":1},{"t":"rep","old":"Restore it on another computer or browser that has this same HTML file.","new":"Restoring a backup replaces the team's shared data for everyone. A backup from the offline HTML file can be restored here too.","n":1},{"t":"rep","old":"The workbook data is embedded in this HTML file and never changes. Your edits are saved separately in this browser (localStorage for this file). Clearing browser data removes them — keep a JSON backup.","new":"The workbook data is loaded by an Admin (User Accounts › Workbook data) and never changes. Your edits are saved to the team's cloud database and shared with everyone signed in. Keep a periodic JSON backup.","n":1},{"t":"rep","old":"This replaces all current changes, monitoring items and settings in this browser.","new":"This replaces all current changes, monitoring items and settings for the whole team.","n":1},{"t":"rep","old":"if (!confirm(`Reset ${what} to the original workbook data? All changes will be lost.`)) return false;","new":"if (!confirm(`Reset ${what} to the original workbook data for the WHOLE TEAM? All changes will be lost.`)) return false;","n":1}]</script>
+<script type="application/json" id="petPatches">[{"t":"region","start":"function loadState(){","end":"function normalizeState(st){","new":"function loadState(){\n  try {\n    const raw = window.PETM && PETM.initialState;\n    if (raw) { const st = JSON.parse(raw); if (st && st.app === APP_ID) { S = normalizeState(st); return; } }\n  } catch (e) { console.warn('cloud state unreadable', e); }\n  S = blankState();\n}\n"},{"t":"region","start":"function saveState(silent){","end":"/* ---------- field definitions ---------- */","new":"function saveState(silent){\n  if (!PETM.canEdit) { PETM_revert(); return; }\n  if (PETM_deptCheck()) { PETM_deptRevert(); return; }\n  S.savedAt = Date.now();\n  PETM_push();\n  updateSaveState();\n  if (!silent) toast('Changes saved');\n}\nfunction updateSaveState(){\n  const el = $('#saveState'); if (!el) return;\n  el.innerHTML = PETM_syncLabel();\n}\n\n"},{"t":"rep","old":"  window.addEventListener('beforeunload', () => { try { localStorage.setItem(LS_KEY, JSON.stringify(S, stateReplacer)); } catch (e) {} });","new":"  window.addEventListener('beforeunload', e => { if (PETM_unsynced()) { e.preventDefault(); e.returnValue = ''; } });","n":1},{"t":"rep","old":"  if (!storageOK) toast('Browser storage is blocked here — changes will not persist. Use Backup JSON.', true);\n","new":"","n":1,"opt":true},{"t":"rep","old":"const ent = {ts: Date.now(), kind,","new":"const ent = {ts: Date.now(), by: PETM.user ? PETM.user.name : '', kind,","n":1},{"t":"rep","old":"fmtTS(x.ts)}<\/td>","new":"fmtTS(x.ts)}${x.by ? '<div class=\"small muted\">' + esc(x.by) + '<\/div>' : ''}<\/td>","n":1},{"t":"rep","old":"fmtTS(h.ts)}<\/td>","new":"fmtTS(h.ts)}${h.by ? '<div class=\"small muted\">' + esc(h.by) + '<\/div>' : ''}<\/td>","n":2},{"t":"rep","old":"unshift({ts: Date.now(), type: $('#noteType').value, text: t})","new":"unshift({ts: Date.now(), by: PETM.user ? PETM.user.name : '', type: $('#noteType').value, text: t})","n":1},{"t":"rep","old":"fmtTS(n.ts)} · <b>","new":"fmtTS(n.ts)}${n.by ? ' · ' + esc(n.by) : ''} · <b>","n":1},{"t":"rep","old":"<div><b>AHI INVENTORY<\/b><span>Monitoring System<\/span><\/div>","new":"<div><b>ASNBATPET<\/b><span>AHI Inventory Monitoring<\/span><\/div>","n":1},{"t":"rep","old":"<div class=\"foot\">Source: ${esc(SEED.sourceFile)}","new":"<div class=\"foot\"><div id=\"petUser\"><\/div>Source: ${esc(SEED.sourceFile)}","n":1},{"t":"rep","old":"· Offline app<\/div>","new":"· Online<\/div>","n":1,"opt":true},{"t":"rep","old":"<span id=\"modeLbl\">Offline app<\/span>","new":"<span id=\"modeLbl\">Online<\/span>","n":1,"opt":true},{"t":"rep","old":"let ROUTE = {v: 'dashboard', p: null};","new":"let ROUTE = {v: 'projects', p: null};","n":1,"opt":true},{"t":"rep","old":"location.hash.slice(1) || 'dashboard'","new":"location.hash.slice(1) || 'projects'","n":1},{"t":"rep","old":"if (!VIEWS[ROUTE.v]) ROUTE = {v: 'dashboard', p: null};","new":"if (!VIEWS[ROUTE.v]) ROUTE = {v: 'projects', p: null};","n":1},{"t":"rep","old":"<h1>AHI INVENTORY MONITORING<\/h1>","new":"<h1>ASNBATPET · AHI INVENTORY MONITORING<\/h1>","n":1},{"t":"rep","old":"<div>AHI Inventory Monitoring · Data as of","new":"<div>ASNBATPET · AHI Inventory Monitoring · Data as of","n":1},{"t":"rep","old":"function storageSize(){ try { return (localStorage.getItem(LS_KEY) || '').length; } catch (e) { return 0; } }","new":"function storageSize(){ try { return JSON.stringify(S, stateReplacer).length; } catch (e) { return 0; } }","n":1},{"t":"rep","old":"<dt>Browser storage used<\/dt>","new":"<dt>Cloud data size<\/dt>","n":1},{"t":"rep","old":"Restore it on another computer or browser that has this same HTML file.","new":"Restoring a backup replaces the team's shared data for everyone. A backup from the offline HTML file can be restored here too.","n":1},{"t":"rep","old":"The workbook data is embedded in this HTML file and never changes. Your edits are saved separately in this browser (localStorage for this file). Clearing browser data removes them — keep a JSON backup.","new":"The workbook data is loaded by an Admin (User Accounts › Workbook data) and never changes. Your edits are saved to the team's cloud database and shared with everyone signed in. Keep a periodic JSON backup.","n":1},{"t":"rep","old":"This replaces all current changes, monitoring items and settings in this browser.","new":"This replaces all current changes, monitoring items and settings for the whole team.","n":1},{"t":"rep","old":"if (!confirm(`Reset ${what} to the original workbook data? All changes will be lost.`)) return false;","new":"if (!confirm(`Reset ${what} to the original workbook data for the WHOLE TEAM? All changes will be lost.`)) return false;","n":1}]</script>
 <script type="text/plain" id="petGlue">
 /* ============================================================
-   PETMalou — cloud sync (Firebase Realtime Database) + accounts
+   ASNBATPET — cloud sync (Firebase Realtime Database) + accounts
    S is saved to petmalou/state as one JSON string. Saves run in a
    transaction and are 3-way merged with whatever teammates saved.
    ============================================================ */
@@ -131,11 +131,98 @@ function PETM_syncLabel(){
   return '<span style="color:var(--green)">● Cloud synced</span>' + (S && S.savedAt ? '<br>Last change ' + fmtTS(S.savedAt) : '');
 }
 
+/* department-limited editing: an Editor with a department can only change that department's fields */
+const PETM_DEPT_LIST = () => (typeof INV_DEPTS !== 'undefined' ? INV_DEPTS : []);
+const PETM_DEPT = (PETM.role === 'Editor' && PETM.user.dept && PETM_DEPT_LIST().some(d => d[0] === PETM.user.dept)) ? PETM.user.dept : '';
+function PETM_deptLabel(k){ const d = PETM_DEPT_LIST().find(x => x[0] === k); return d ? d[1] : (k || ''); }
+function PETM_fieldOK(k){ if (!PETM_DEPT) return true; const d = PETM_DEPT_LIST().find(x => x[0] === PETM_DEPT); const f = FIELD[k]; return !!(d && f && d[2].includes(f.g)); }
+function PETM_deptCheck(){
+  if (!PETM_DEPT) return '';
+  const B = PETM_BASE || blankState(), L = PETM_clone(S), skip = new Set(['edits', 'history', 'activity', 'savedAt']);
+  for (const k of new Set(Object.keys(B).concat(Object.keys(L)))) if (!skip.has(k) && JSON.stringify(B[k]) !== JSON.stringify(L[k])) return k;
+  const be = B.edits || {}, le = L.edits || {};
+  for (const id of new Set(Object.keys(be).concat(Object.keys(le)))) {
+    const a = be[id] || {}, b = le[id] || {};
+    for (const f of new Set(Object.keys(a).concat(Object.keys(b)))) if (JSON.stringify(a[f]) !== JSON.stringify(b[f]) && (f === 'x' || f === 'cf' || !PETM_fieldOK(f))) return f;
+  }
+  return '';
+}
+function PETM_deptRevert(){
+  const B = PETM_clone(PETM_BASE || blankState()), L = PETM_clone(S), skip = new Set(['edits', 'history', 'activity', 'savedAt']);
+  for (const k of new Set(Object.keys(B).concat(Object.keys(L)))) if (!skip.has(k)) { if (k in B) L[k] = B[k]; else delete L[k]; }
+  const be = B.edits || {}, le = L.edits = L.edits || {};
+  for (const id of new Set(Object.keys(be).concat(Object.keys(le)))) {
+    const a = be[id] || {}, b = le[id] = le[id] || {};
+    for (const f of new Set(Object.keys(a).concat(Object.keys(b)))) if (JSON.stringify(a[f]) !== JSON.stringify(b[f]) && (f === 'x' || f === 'cf' || !PETM_fieldOK(f))) { if (f in a) b[f] = a[f]; else delete b[f]; }
+    if (!Object.keys(b).length && !(id in be)) delete le[id];
+  }
+  S = normalizeState(L); DIRTY = true; render(); PETM_push();
+  toast('Your account can only change ' + PETM_deptLabel(PETM_DEPT) + ' fields — that change was not saved.', true);
+}
+if (PETM_DEPT && typeof updateRecord === 'function') {
+  const PETM_updateRecord0 = updateRecord;
+  updateRecord = function(id, changes, opts){
+    const bad = Object.keys(changes || {}).filter(k => !PETM_fieldOK(k));
+    if (bad.length) {
+      toast('Your account can only change ' + PETM_deptLabel(PETM_DEPT) + ' fields. Not saved: ' + bad.map(fieldLabel).join(', '), true);
+      changes = Object.fromEntries(Object.entries(changes).filter(([k]) => PETM_fieldOK(k)));
+      if (!Object.keys(changes).length) { DIRTY = true; render(); return 0; }
+    }
+    return PETM_updateRecord0(id, changes, opts);
+  };
+}
+const PETM_canEditAll = () => PETM.canEdit && !PETM_DEPT;
+
+/* SDP files: shared through the database instead of this browser's storage */
+const PETM_sdpKey = p => encodeURIComponent(p).replace(/\./g, '%2E');
+if (typeof sdpSave === 'function') {
+  sdpLoadAll = function(){
+    return PETM.ref('sdp').get().then(async s => {
+      const meta = s.val() || {};
+      let local = []; try { local = (await sdpTx('readonly', st => st.getAll())) || []; } catch (e) {}
+      const byP = new Map(local.map(r => [r.project, r]));
+      Object.values(SDP.cache).forEach(c => c.url && URL.revokeObjectURL(c.url)); SDP.cache = {};
+      for (const [k, m] of Object.entries(meta)) {
+        let r = byP.get(m.project);
+        if (!r || r.uploadedAt !== m.uploadedAt) {
+          const d = (await PETM.ref('sdpFiles/' + k).get()).val(); if (!d) continue;
+          const blob = await (await fetch(d)).blob();
+          r = {project: m.project, name: m.name, type: m.type, size: m.size, blob, uploadedAt: m.uploadedAt};
+          try { await sdpTx('readwrite', st => st.put(r)); } catch (e) {}
+        }
+        if (m.by) NAMES[m.by] = m.by;
+        SDP.cache[m.project] = Object.assign({}, r, {by: m.by || '', url: URL.createObjectURL(r.blob)});
+      }
+      SDP.loaded = true; SDP.ok = true;
+    }).catch(e => { SDP.ok = false; SDP.loaded = true; console.warn('SDP load failed', e); });
+  };
+  sdpSave = function(project, file){
+    if (!PETM_canEditAll()) { toast('Only Admins and Editors without a department can upload SDP files.', true); return; }
+    if (!/^image\/|^application\/pdf$/.test(file.type)) { toast('Please choose an image (JPG/PNG) or a PDF file', true); return; }
+    if (file.size > 7 * 1024 * 1024) { toast('The online app accepts SDP files up to 7 MB. Please export a smaller copy.', true); return; }
+    toast('Uploading SDP…');
+    const k = PETM_sdpKey(project), old = SDP.cache[project], rd = new FileReader();
+    rd.onload = () => PETM.ref('sdpFiles/' + k).set(rd.result)
+      .then(() => PETM.ref('sdp/' + k).set({project, name: file.name, type: file.type, size: file.size, uploadedAt: Date.now(), by: PETM.user.name}))
+      .then(() => { logActivity('sdp', project, project + ' · SDP', 'SDP file', old ? old.name : '', file.name); saveState(true); toast('SDP uploaded for ' + project); })
+      .catch(e => toast('Upload failed: ' + (e.message || e), true));
+    rd.onerror = () => toast('Could not read that file.', true);
+    rd.readAsDataURL(file);
+  };
+  sdpRemove = function(project){
+    if (!PETM_canEditAll()) { toast('Only Admins and Editors without a department can remove SDP files.', true); return; }
+    if (!confirm('Remove the SDP file for ' + project + ' for everyone?')) return;
+    const k = PETM_sdpKey(project);
+    PETM.ref('sdp/' + k).remove().then(() => PETM.ref('sdpFiles/' + k).remove()).then(() => { logActivity('sdp', project, project + ' · SDP', 'SDP file', project, ''); saveState(true); toast('SDP removed'); })
+      .catch(e => toast('Could not remove: ' + (e.message || e), true));
+  };
+}
+
 /* accounts view (Admin) */
 const PETM_ROLES = ['Admin', 'Editor', 'Viewer'], PETM_STATUSES = ['pending', 'approved', 'disabled'];
 function viewUsers(){
   const m = PETM.meta || {};
-  $('#view').innerHTML = `<div class="pagehd"><div><h2>User Accounts</h2><div class="sub">People request access from the sign-in screen. Approve them here and set a role. <b>Admin</b>: everything, including Settings and this page. <b>Editor</b>: view and edit every module except Settings. <b>Viewer</b>: view only.</div></div></div>
+  $('#view').innerHTML = `<div class="pagehd"><div><h2>User Accounts</h2><div class="sub">People request access from the sign-in screen. Approve them here and set a role. <b>Admin</b>: everything, including Settings and this page. <b>Editor</b>: view and edit every module except Settings. <b>Viewer</b>: view only. An <b>Editor with a department</b> can only change that department's fields; set the department to “All departments” for full editing.</div></div></div>
   <div class="card mb"><div class="hd"><h3>Accounts</h3><span class="note" id="uCount"></span></div><div class="bd flush tblwrap" id="uTbl"></div></div>
   <div class="card"><div class="hd"><h3>Workbook data</h3><span class="note">Shared with everyone signed in</span></div><div class="bd">
     <dl class="kv"><dt>Source file</dt><dd>${esc(m.sourceFile || '—')}</dd><dt>Data as of</dt><dd>${esc(m.asOf || '—')}</dd><dt>Records</dt><dd class="num">${fmtNum(m.records)}</dd><dt>Loaded from</dt><dd>${esc(m.fileName || '—')}</dd><dt>Loaded by</dt><dd>${esc(m.loadedBy || '—')} · ${fmtTS(m.loadedAt)}</dd></dl>
@@ -156,7 +243,7 @@ function PETM_drawUsers(){
   const pend = list.filter(u => u.status === 'pending').length;
   $('#uCount').textContent = list.length + ' accounts' + (pend ? ' · ' + pend + ' waiting for approval' : '');
   el.innerHTML = `<table class="t"><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Requested</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>${list.map(u => `<tr data-uid="${esc(u.uid)}"${u.status === 'pending' ? ' style="background:#fff8e6"' : ''}>
-    <td><b>${esc(u.name)}</b>${u.uid === PETM.user.uid ? ' <span class="pill">you</span>' : ''}</td><td>${esc(u.email)}</td><td>${esc(u.dept || '—')}</td><td>${fmtTS(u.createdAt)}</td>
+    <td><b>${esc(u.name)}</b>${u.uid === PETM.user.uid ? ' <span class="pill">you</span>' : ''}</td><td>${esc(u.email)}</td><td><select class="in" data-udept><option value="">All departments</option>${PETM_DEPT_LIST().map(d => `<option value="${esc(d[0])}" ${u.dept === d[0] ? 'selected' : ''}>${esc(d[1])}</option>`).join('')}${u.dept && !PETM_DEPT_LIST().some(d => d[0] === u.dept) ? `<option value="${esc(u.dept)}" selected>${esc(u.dept)}</option>` : ''}</select></td><td>${fmtTS(u.createdAt)}</td>
     <td><select class="in" data-urole>${PETM_ROLES.map(r => `<option ${u.role === r ? 'selected' : ''}>${r}</option>`).join('')}</select></td>
     <td><select class="in" data-ustat>${PETM_STATUSES.map(s => `<option value="${s}" ${u.status === s ? 'selected' : ''}>${s[0].toUpperCase() + s.slice(1)}</option>`).join('')}</select></td>
     <td>${u.status === 'pending' ? '<button class="btn sm pri" data-uok>Approve</button> ' : ''}<button class="btn sm" data-ureset title="Email this person a link to set a new password">Reset password</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty">No accounts</td></tr>'}</tbody></table>`;
@@ -168,6 +255,7 @@ function PETM_drawUsers(){
     const uid = tr.dataset.uid, u = PETM_USERS[uid];
     $('[data-urole]', tr).onchange = e => upd(uid, {role: e.target.value});
     $('[data-ustat]', tr).onchange = e => upd(uid, {status: e.target.value});
+    $('[data-udept]', tr).onchange = e => upd(uid, {dept: e.target.value});
     const ok = $('[data-uok]', tr); if (ok) ok.onclick = () => upd(uid, {status: 'approved', role: $('[data-urole]', tr).value});
     $('[data-ureset]', tr).onclick = async () => { try { await PETM.auth.sendPasswordResetEmail(u.email); toast('Password reset email sent to ' + u.email); } catch (e) { toast(e.message, true); } };
   });
@@ -183,7 +271,7 @@ const PETM_renderShell0 = renderShell;
 renderShell = function(){
   PETM_renderShell0();
   const u = PETM.user;
-  $('#petUser').innerHTML = `<div style="color:#fff;font-weight:600;font-size:12.5px">${esc(u.name)}</div><div>${esc(PETM.role)}${u.dept ? ' · ' + esc(u.dept) : ''}</div><a href="#" id="petOut" style="color:#b7d98f">Sign out</a>`;
+  $('#petUser').innerHTML = `<div style="color:#fff;font-weight:600;font-size:12.5px">${esc(u.name)}</div><div>${esc(PETM.role)}${u.dept ? ' · ' + esc(u.dept) : ''}</div>${PETM_DEPT ? `<div style="color:#f0c674">Can edit ${esc(PETM_deptLabel(PETM_DEPT))} fields only</div>` : ''}<a href="#" id="petOut" style="color:#b7d98f">Sign out</a>`;
   $('#petOut').onclick = e => { e.preventDefault(); if (PETM_unsynced() && !confirm('Some changes are still saving. Sign out anyway?')) return; PETM.auth.signOut().then(() => location.replace(location.pathname)); };
   const nu = $('#nav a[data-nav="users"]'); if (nu) nu.insertAdjacentHTML('beforeend', '<em class="cnt" id="navUsers" style="display:none;font-style:normal"></em>');
   $('#saveState').insertAdjacentHTML('beforebegin', '<span id="petNew"></span>');
@@ -193,7 +281,9 @@ renderShell = function(){
   ICONS.users = '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>';
   if (PETM.isAdmin) { NAV.push(['users', 'User Accounts']); VIEWS.users = viewUsers; }
   else { const i = NAV.findIndex(n => n[0] === 'settings'); if (i >= 0) NAV.splice(i, 1); delete VIEWS.settings; }
-  if (PETM.user.dept && DEPTS.some(d => d.k === PETM.user.dept)) { INV.dept = PETM.user.dept; DEP.k = PETM.user.dept; }
+  { const i = NAV.findIndex(n => n[0] === 'dashboard'); if (i >= 0) NAV.splice(i, 1); VIEWS.dashboard = VIEWS.projects; VIEWS.plan = VIEWS.projects; }
+  if (PETM.user.dept && DEPTS.some(d => d.k === PETM.user.dept)) DEP.k = PETM.user.dept;
+  if (!PETM.canEdit) document.body.classList.add('ro');
   try { PETM_BASE = PETM.initialState ? JSON.parse(PETM.initialState) : null; } catch (e) { PETM_BASE = null; }
   PETM_lastStr = PETM.initialState || null;
   PETM.afterInit = () => {
@@ -201,6 +291,7 @@ renderShell = function(){
     PETM.ref('state').on('value', snap => { const v = snap.val(); if (v == null) return; if (PETM_pushing) { PETM_pending = v; return; } PETM_integrate(v); });
     PETM.db.ref('.info/connected').on('value', s => { PETM_conn = !!s.val(); updateSaveState(); });
     PETM.ref('meta/seedVersion').on('value', s => { const v = s.val(); const el = $('#petNew'); if (el) el.innerHTML = v && v !== PETM.seedVersion ? '<button class="btn sm" onclick="location.reload()" style="border-color:var(--orange);color:var(--orange)">New workbook data — Reload</button>' : ''; });
+    if (typeof sdpSave === 'function') PETM.ref('sdp').on('value', () => { SDP.loaded = false; sdpLoadAll().then(() => { if ($('[data-sdpdrop]') && PETM_safe()) render(); }); });
     if (PETM.isAdmin) PETM.ref('users').on('value', s => { PETM_USERS = s.val() || {}; PETM_navBadge(); if (ROUTE && ROUTE.v === 'users') PETM_drawUsers(); });
     setInterval(() => { if (PETM_pending && !PETM_pushing && PETM_safe()) PETM_integrate(PETM_pending); }, 1500);
     updateSaveState();
@@ -219,12 +310,12 @@ const gate = document.getElementById('gate');
 const q = s => gate.querySelector(s);
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let LOGO = '';
-const DEPTS = ['CONS — Construction','QMD — Quality Management','CCR — Customer Care','FIN — Finance','SAM — Title & Documentation','Sales','Management','Other'];
+const DEPTS = ['ENG · Engineering','PLN · Planning','PDT · Project Development','CONS · Construction','FIN · Finance','QMD · Quality Management','CCR · Customer Care','SAM · Title & Documentation'];
 const PETM = window.PETM = {ROOT, user: null, role: null, canEdit: false, isAdmin: false, booted: false};
 let pendingProfile = null;
 
 function shell(inner){
-  gate.innerHTML = `<div class="gcard"><div class="glogo">${LOGO ? `<img src="${LOGO}" alt="Asiana Homes logo">` : ''}<div><b>PETMalou</b><span>AHI Inventory Monitoring · Online</span></div></div>${inner}</div>`;
+  gate.innerHTML = `<div class="gcard"><div class="glogo">${LOGO ? `<img src="${LOGO}" alt="Asiana Homes logo">` : ''}<div><b>ASNBATPET</b><span>AHI Inventory Monitoring · Online</span></div></div>${inner}</div>`;
   gate.style.display = 'flex';
 }
 function say(t, err){ const m = q('.gmsg'); if (m) { m.textContent = t; m.className = 'gmsg' + (err ? ' err' : ' ok'); } }
@@ -256,7 +347,7 @@ function signUpView(){
   shell(`<h2>Create an account</h2><p class="gsub">An Admin approves new accounts before they can open the app.</p>
     <form id="gUp"><label class="gf"><span>Full name</span><input class="in" id="gName" autocomplete="name" required></label>
     <label class="gf"><span>Email</span><input class="in" type="email" id="gEmail" autocomplete="username" required></label>
-    <label class="gf"><span>Department</span><select class="in" id="gDept"><option value="">Choose…</option>${DEPTS.map(d => `<option value="${esc(d.split(' — ')[0])}">${esc(d)}</option>`).join('')}</select></label>
+    <label class="gf"><span>Department <em>(an Admin can change it)</em></span><select class="in" id="gDept"><option value="">Choose…</option><option value="OTHER">Other / not listed</option>${DEPTS.map(d => `<option value="${esc(d.split(' · ')[0])}">${esc(d)}</option>`).join('')}</select></label>
     <label class="gf"><span>Password <em>(8+ characters)</em></span><input class="in" type="password" id="gPass" autocomplete="new-password" minlength="8" required></label>
     <label class="gf"><span>Confirm password</span><input class="in" type="password" id="gPass2" autocomplete="new-password" minlength="8" required></label>
     <button class="btn pri gbtn" type="submit">Request access</button></form>
@@ -267,7 +358,7 @@ function signUpView(){
     if (!q('#gDept').value) return say('Choose your department.', true);
     if (p.length < 8) return say('Use at least 8 characters for the password.', true);
     if (p !== q('#gPass2').value) return say('The two passwords do not match.', true);
-    pendingProfile = {name, dept: q('#gDept').value};
+    pendingProfile = {name, dept: q('#gDept').value === 'OTHER' ? '' : q('#gDept').value};
     say('Creating your account…');
     try { const cred = await auth.createUserWithEmailAndPassword(email, p); cred.user.updateProfile({displayName: name}).catch(() => {}); }
     catch (err) { pendingProfile = null; say(authErr(err), true); }
@@ -284,7 +375,7 @@ function resetView(email){
 function outBtn(){ return '<div class="glinks"><a href="#" id="gOut">Sign out</a></div>'; }
 function wireOut(){ const o = q('#gOut'); if (o) o.onclick = e => { e.preventDefault(); auth.signOut(); }; }
 function waitView(rec){
-  shell(`<h2>Waiting for approval</h2><p class="gsub">Hi ${esc(rec.name)} — your account request was sent. An Admin needs to approve it before you can open PETMalou.</p>
+  shell(`<h2>Waiting for approval</h2><p class="gsub">Hi ${esc(rec.name)} — your account request was sent. An Admin needs to approve it before you can open ASNBATPET.</p>
     <button class="btn pri gbtn" id="gAgain">Check again</button><p class="gmsg"></p>${outBtn()}`);
   q('#gAgain').onclick = () => location.reload(); wireOut();
 }
@@ -319,14 +410,14 @@ PETM.buildApp = function(code){
       out = out.slice(0, a) + op.new + out.slice(b);
     } else {
       const n = out.split(op.old).length - 1;
-      if (n !== (op.n || 1)) throw new Error('App version not supported (patch “' + op.old.slice(0, 50) + '”).');
+      if (n !== (op.n || 1)) { if (op.opt) continue; throw new Error('App version not supported (patch “' + op.old.slice(0, 50) + '”).'); }
       out = out.split(op.old).join(op.new);
     }
   }
   return out + '\n' + document.getElementById('petGlue').textContent + '\ninit(); PETM.afterInit();\n';
 };
 function uploadView(){
-  shell(`<h2>Load the workbook data</h2><p class="gsub">You're the Admin. One last step: choose the offline app file (for example <b>AHI_Inventory_Monitoring_4.html</b>). PETMalou copies the app, its inventory and its Strategic Plan data into the team database. Nobody else can open the app until this is done.</p>
+  shell(`<h2>Load the workbook data</h2><p class="gsub">You're the Admin. One last step: choose the offline app file (for example <b>AHI_Inventory_Monitoring_4.html</b>). ASNBATPET copies the app, its inventory and its Strategic Plan data into the team database. Nobody else can open the app until this is done.</p>
     <label class="btn pri gbtn">Choose file…<input type="file" id="gFile" accept=".html,.htm" hidden></label><p class="gmsg"></p>${outBtn()}`);
   wireOut();
   q('#gFile').onchange = async e => {
@@ -359,7 +450,7 @@ function boot(c, stateStr){
   document.body.appendChild(s);
 }
 async function afterSignIn(u){
-  shell('<p class="gmsg">Opening PETMalou…</p>');
+  shell('<p class="gmsg">Opening ASNBATPET…</p>');
   const myRef = PETM.ref('users/' + u.uid);
   let rec = (await myRef.get()).val();
   if (!rec) {
@@ -369,7 +460,7 @@ async function afterSignIn(u){
     rec = (await myRef.get()).val();
   }
   if (rec.status === 'pending') return waitView(rec);
-  if (rec.status !== 'approved') { shell(`<h2>Account disabled</h2><p class="gsub">This account can't open PETMalou. Ask an Admin to re-enable it.</p>${outBtn()}`); return wireOut(); }
+  if (rec.status !== 'approved') { shell(`<h2>Account disabled</h2><p class="gsub">This account can't open ASNBATPET. Ask an Admin to re-enable it.</p>${outBtn()}`); return wireOut(); }
   PETM.user = {uid: u.uid, email: u.email, name: rec.name || u.email, dept: rec.dept || ''};
   PETM.role = rec.role; PETM.isAdmin = rec.role === 'Admin'; PETM.canEdit = rec.role === 'Admin' || rec.role === 'Editor';
   const meta = (await PETM.ref('meta').get()).val();
@@ -380,7 +471,8 @@ async function afterSignIn(u){
   PETM.meta = meta; PETM.seedVersion = meta.seedVersion;
   const [c, st] = await Promise.all([loadSeed(meta), PETM.ref('state').get()]);
   myRef.on('value', s => { const r = s.val(); if (!r || r.status !== 'approved' || r.role !== PETM.role) location.reload(); });
-  boot(c, st.val());
+  try { boot(c, st.val()); }
+  catch (e) { PETM.booted = false; if (PETM.isAdmin) { uploadView(); say('The stored app could not be opened (' + e.message + '). Load the latest offline file to continue.', true); return; } throw e; }
 }
 function setIcon(){ if (!LOGO) return; let l = document.querySelector('link[rel=icon]'); if (!l) { l = document.createElement('link'); l.rel = 'icon'; document.head.appendChild(l); } l.href = LOGO; }
 PETM.ref('public/logo').get().then(s => { LOGO = s.val() || ''; setIcon(); }).catch(() => {}).finally(() => auth.onAuthStateChanged(u => {
