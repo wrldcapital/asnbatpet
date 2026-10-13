@@ -11,24 +11,24 @@
    },
    "public": {
     ".read": true,
-    ".write": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved' && root.child('petmalou/users/' + auth.uid).child('role').val() === 'Admin'"
+    ".write": false
    },
    "app": {
     ".read": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved'",
-    ".write": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved' && root.child('petmalou/users/' + auth.uid).child('role').val() === 'Admin'"
+    ".write": false
    },
    "meta": {
     ".read": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved'",
-    ".write": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved' && root.child('petmalou/users/' + auth.uid).child('role').val() === 'Admin'"
+    ".write": false
    },
    "seed": {
     ".read": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved'",
-    ".write": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved' && root.child('petmalou/users/' + auth.uid).child('role').val() === 'Admin'",
+    ".write": false,
     ".validate": "newData.isString()"
    },
    "petSeed": {
     ".read": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved'",
-    ".write": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved' && root.child('petmalou/users/' + auth.uid).child('role').val() === 'Admin'"
+    ".write": false
    },
    "state": {
     ".read": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved'",
