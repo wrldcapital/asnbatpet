@@ -34,6 +34,17 @@
     ".read": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved'",
     ".write": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved' && (root.child('petmalou/users/' + auth.uid).child('role').val() === 'Admin' || root.child('petmalou/users/' + auth.uid).child('role').val() === 'Editor')",
     ".validate": "newData.isString()"
+   },
+   "sdp": {
+    ".read": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved'",
+    ".write": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved' && (root.child('petmalou/users/' + auth.uid).child('role').val() === 'Admin' || (root.child('petmalou/users/' + auth.uid).child('role').val() === 'Editor' && (root.child('petmalou/users/' + auth.uid).child('dept').val() === null || !root.child('petmalou/users/' + auth.uid).child('dept').val().matches(/^(ENG|PLN|PDT|CONS|FIN|QMD|CCR|SAM)$/))))"
+   },
+   "sdpFiles": {
+    ".read": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved'",
+    ".write": "auth != null && root.child('petmalou/users/' + auth.uid).child('status').val() === 'approved' && (root.child('petmalou/users/' + auth.uid).child('role').val() === 'Admin' || (root.child('petmalou/users/' + auth.uid).child('role').val() === 'Editor' && (root.child('petmalou/users/' + auth.uid).child('dept').val() === null || !root.child('petmalou/users/' + auth.uid).child('dept').val().matches(/^(ENG|PLN|PDT|CONS|FIN|QMD|CCR|SAM)$/))))",
+    "$k": {
+     ".validate": "newData.isString() && newData.val().length < 10000000"
+    }
    }
   }
  }
